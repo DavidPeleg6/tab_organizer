@@ -1,0 +1,33 @@
+# tab_organizer Development Guidelines
+
+Auto-generated from all feature plans. Last updated: 2025-11-30
+
+## Active Technologies
+- TypeScript 5.x (Node 20 toolchain) + Chrome Extensions MV3 APIs (`chrome.tabs`, `chrome.tabGroups`, `chrome.downloads`), Vite 5 build pipeline, React or lightweight view layer for popup, Zod for schema validation (001-capture-tab-urls)
+- Local JSON files via Chrome downloads (export) + in-memory snapshot payload passed from popup to service worker (import) (001-capture-tab-urls)
+
+- (001-capture-tab-urls)
+
+## Project Structure
+
+```text
+backend/
+frontend/
+tests/
+```
+
+## Commands
+
+# Add commands for 
+
+## Code Style
+
+: Follow standard conventions
+
+## Recent Changes
+- 001-capture-tab-urls: Added TypeScript 5.x (Node 20 toolchain) + Chrome Extensions MV3 APIs (`chrome.tabs`, `chrome.tabGroups`, `chrome.downloads`), Vite 5 build pipeline, React or lightweight view layer for popup, Zod for schema validation
+
+- 001-capture-tab-urls: Added
+
+<!-- MANUAL ADDITIONS START -->
+<!-- MANUAL ADDITIONS END -->

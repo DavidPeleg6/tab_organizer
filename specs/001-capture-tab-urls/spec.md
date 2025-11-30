@@ -5,6 +5,14 @@
 **Status**: Draft  
 **Input**: User description: "id like to create a google chrome extension, that captures the urls of all the currently open tabs, and logs them into a json file. it should also be able to capture grouped tabs"
 
+## Clarifications
+
+### Session 2025-11-30
+
+- Q: When loading a saved tab JSON, should the extension auto-recreate everything or offer manual selection? → A: Auto-recreate windows, tabs, and groups exactly as saved.
+- Q: Should the success criteria stay as quantitative metrics or become qualitative checks since this is a private project? → A: Replace with qualitative completion checklist only.
+- Q: Are privacy-only requirements (metadata only, no local copy beyond JSON) necessary for this solo project? → A: No; remove those requirements from scope.
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Export every open tab on demand (Priority: P1)
@@ -34,6 +42,7 @@ As a user organizing research into Chrome tab groups, I want the export to inclu
 
 1. **Given** I have tabs assigned to named groups, **When** I export, **Then** the JSON includes a `tab_groups` collection with name, color, and tab references.  
 2. **Given** a tab group is empty or unnamed, **When** I export, **Then** the JSON still records the group and flags it appropriately so nothing silently disappears.
+3. **Given** I load a previously exported JSON, **When** the extension processes it, **Then** it restores windows, tabs, and tab groups exactly as described so the saved organization reappears.
 
 ---
 
@@ -55,7 +64,7 @@ As someone who snapshots tabs frequently, I can set a meaningful filename (or ac
 ### Edge Cases
 
 - User triggers export with zero normal windows (e.g., only incognito) and the extension lacks incognito permission.  
-- Browser has >500 tabs resulting in large payloads or Chrome-imposed execution limits.  
+- Browser has >500 tabs resulting in large payloads or Chrome-imposed execution limits (explicitly out of scope; best-effort only).  
 - Tab groups exist without names or colors, or groups referenced tabs that have just closed.  
 - Download permissions denied by Chrome policy or enterprise restrictions.  
 - User is offline or Chrome forbids file creation in the chosen directory.  
@@ -72,7 +81,7 @@ As someone who snapshots tabs frequently, I can set a meaningful filename (or ac
 - **FR-005**: Prompt the user to confirm or edit the suggested filename (default: `tabs-export-YYYYMMDD-HHMM.json`) before download and ensure filenames are unique per export.  
 - **FR-006**: Deliver the JSON file via the browser’s standard download flow and surface success/failure messaging within the extension UI.  
 - **FR-007**: Handle permission or data-collection failures gracefully by notifying the user which capability is missing (e.g., tab access, download access) and how to resolve it.  
-- **FR-008**: Ensure no tab content beyond metadata is stored; all data remains local to the exported JSON with no background transmission.
+- **FR-009**: Provide a load flow that accepts a previously exported JSON and automatically recreates all saved windows, tabs, and tab groups in Chrome, matching their saved order and grouping.
 
 ### Key Entities *(include if feature involves data)*
 
@@ -91,9 +100,8 @@ As someone who snapshots tabs frequently, I can set a meaningful filename (or ac
 
 ## Success Criteria *(mandatory)*
 
-### Measurable Outcomes
+### Completion Checklist
 
-- **SC-001**: 95% of exports with up to 200 tabs complete in under 5 seconds from button press to download notification.  
-- **SC-002**: At least 90% of pilot users report that the JSON structure is sufficient to restore their browsing session without requesting additional metadata.  
-- **SC-003**: Support ticket rate for “missing tabs or groups after export” remains below 2% of total exports during beta testing.  
-- **SC-004**: 100% of exports produce unique filenames by default, preventing unintended overwrites even when triggered multiple times per hour.
+- **SC-Load**: Loading an exported JSON recreates the same windows, tabs, and tab groups with matching organization.  
+- **SC-Export**: Export flow always writes a JSON file locally without requiring manual file management.  
+- **SC-Message**: The extension surfaces a visible toast or popup indicating success or describing any failure cause.  

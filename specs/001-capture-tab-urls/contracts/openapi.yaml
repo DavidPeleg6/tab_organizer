@@ -1,0 +1,182 @@
+openapi: 3.0.3
+info:
+  title: Tab Snapshot Extension Contracts
+  version: 0.1.0
+  description: >
+    Logical contracts for extension message handlers that perform export and import
+    of Chrome tab snapshots. These mirror `chrome.runtime.sendMessage` payloads.
+paths:
+  /snapshots/export:
+    post:
+      summary: Capture current tabs and trigger download.
+      operationId: exportSnapshot
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExportRequest'
+      responses:
+        '200':
+          description: JSON snapshot prepared and handed to downloads API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExportResponse'
+  /snapshots/import:
+    post:
+      summary: Restore tabs/windows/groups from a saved snapshot JSON.
+      operationId: importSnapshot
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ImportRequest'
+      responses:
+        '200':
+          description: Import accepted; windows/groups recreation kicked off.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImportResponse'
+components:
+  schemas:
+    ExportRequest:
+      type: object
+      properties:
+        filename:
+          type: string
+          description: Optional filename override for download prompt.
+      required: []
+    ExportResponse:
+      type: object
+      properties:
+        snapshot:
+          $ref: '#/components/schemas/TabSnapshot'
+        downloadId:
+          type: integer
+          description: Chrome downloads id returned from `chrome.downloads.download`.
+    ImportRequest:
+      type: object
+      properties:
+        snapshot:
+          $ref: '#/components/schemas/TabSnapshot'
+      required:
+        - snapshot
+    ImportResponse:
+      type: object
+      properties:
+        restoredWindows:
+          type: integer
+        restoredTabs:
+          type: integer
+    TabSnapshot:
+      type: object
+      properties:
+        version:
+          type: string
+        captured_at:
+          type: string
+          format: date-time
+        total_tabs:
+          type: integer
+        total_windows:
+          type: integer
+        total_groups:
+          type: integer
+        windows:
+          type: array
+          items:
+            $ref: '#/components/schemas/BrowserWindow'
+        tab_groups:
+          type: array
+          items:
+            $ref: '#/components/schemas/TabGroup'
+        tabs:
+          type: array
+          items:
+            $ref: '#/components/schemas/TabEntry'
+      required:
+        - version
+        - captured_at
+        - total_tabs
+        - total_windows
+        - total_groups
+        - windows
+        - tab_groups
+        - tabs
+    BrowserWindow:
+      type: object
+      properties:
+        id:
+          type: string
+        focused:
+          type: boolean
+        bounds:
+          type: object
+          nullable: true
+          properties:
+            top:
+              type: integer
+            left:
+              type: integer
+            width:
+              type: integer
+            height:
+              type: integer
+        tab_ids:
+          type: array
+          items:
+            type: string
+      required:
+        - id
+        - focused
+        - tab_ids
+    TabGroup:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+          nullable: true
+        color:
+          type: string
+          nullable: true
+        collapsed:
+          type: boolean
+        tab_ids:
+          type: array
+          items:
+            type: string
+      required:
+        - id
+        - collapsed
+        - tab_ids
+    TabEntry:
+      type: object
+      properties:
+        id:
+          type: string
+        window_id:
+          type: string
+        group_id:
+          type: string
+          nullable: true
+        url:
+          type: string
+        title:
+          type: string
+        pinned:
+          type: boolean
+        index:
+          type: integer
+      required:
+        - id
+        - window_id
+        - url
+        - title
+        - pinned
+        - index
+

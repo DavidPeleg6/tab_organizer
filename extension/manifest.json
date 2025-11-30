@@ -1,0 +1,16 @@
+{
+  "manifest_version": 3,
+  "name": "Tab Snapshot Logger",
+  "version": "0.1.0",
+  "description": "Capture and restore all open tabs with grouping metadata.",
+  "permissions": ["tabs", "tabGroups", "downloads"],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Tab Snapshot"
+  },
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  }
+}
+
